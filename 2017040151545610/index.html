@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>幸运大奖</title>
+	<link rel="stylesheet" href="css/dmaku.css">
+</head>
+<body>
+	<div id="box" class="box">
+	    <div class="outer KinerLottery KinerLotteryContent"><img src="./images/lanren.png"></div>
+	    <!-- 大专盘分为三种状态：活动未开始（no-start）、活动进行中(start)、活动结束(completed),可通过切换class进行切换状态，js会根据这3个class进行匹配状态 -->
+	    <div class="inner KinerLotteryBtn start" id="begin"></div>
+	</div>
+	
+	<script src="js/zepto.min.js"></script>
+      <script src="js/kinerLottery.js"></script>
+      <script>
+        /**
+         * 根据转盘旋转角度判断获得什么奖品
+         * @param deg
+         * @returns {*}
+         */
+        var whichAward = function(deg) {
+            if ((deg > 330 && deg <= 360) || (deg > 0 && deg <= 30)) { //10M流量
+                return "三网通流量 10M";
+            } else if ((deg > 30 && deg <= 90)) { //IPhone 7
+                return "iPhone7";
+            } else if (deg > 90 && deg <= 150) { //30M流量
+                return "三网通流量 30M";
+            } else if (deg > 150 && deg <= 210) { //5元话费
+                return "话费5元";
+            } else if (deg > 210 && deg <= 270) { //IPad mini 4
+                return "ipad mini4";
+            } else if (deg > 270 && deg <= 330) { //20元话费
+                return "话费20元";
+            }
+        };
+
+        /* 概率控制测试 */
+
+        var nArray = [];
+        var d1 = 0;
+        var d2 = 0;
+        var d4 = 0;
+        var d3 = 0;
+        var d5 = 0;
+        var d6 = 0;
+
+        var le = 10000000;
+
+        for (var i = 0; i < le; i++) {
+            var h = Math.random();
+            if ( h < 0.25 ) {
+                d1++;
+            }
+            else if ( h < 0.50 ) {
+                d2++;
+            }
+            else if ( h < 0.70 ) {
+                d3++;
+            }
+            else if ( h < 0.85 ) {
+                d4++;
+            }
+            else if ( h < 0.95) {
+                d5++;
+            }
+            else if ( h < 1) {
+                d6++;
+            }
+		}
+
+        console.log('dddd',(d1/le*100).toFixed(4)+'%',(d2/le*100).toFixed(4)+'%',(d3/le*100).toFixed(4)+'%',(d4/le*100).toFixed(4)+'%',(d5/le*100).toFixed(4)+'%',(d6/le*100).toFixed(4)+'%');
+
+        // 概率随机数
+        var KinerLottery = new KinerLottery({
+            rotateNum: 8, //转盘转动圈数
+            body: "#box", //大转盘整体的选择符或zepto对象
+            direction: 0, //0为顺时针转动,1为逆时针转动
+            disabledHandler: function(key) {
+                switch (key) {
+                    case "noStart":
+                        alert("活动尚未开始");
+                        break;
+                    case "completed":
+                        alert("活动已结束");
+                        break;
+                }
+            }, //禁止抽奖时回调
+//            clickCallback: function() {
+//                //此处访问接口获取奖品
+//                function random() {
+//                    console.log('121212121',Math.floor(Math.random() * 360))
+//                    return Math.floor(Math.random() * 360);
+//                }
+//                this.goKinerLottery(random());
+//            }, //点击抽奖按钮,再次回调中实现访问后台获取抽奖结果,拿到抽奖结果后显示抽奖画面
+
+
+
+            clickCallback: function() {
+
+
+                function random() {
+
+                    var deg;
+                    var d = Math.floor(Math.random() * 360);
+
+                    var n = Math.random();
+
+                    if ( n < 0.25 ) {
+                        deg = 0;
+					}
+					else if (n < 0.50 ) {
+                        deg = 60;
+					}
+					else if ( n < 0.70 ) {
+                        deg = 120;
+					}
+					else if ( n < 0.85 ) {
+                        deg = 180;
+					}
+					else if ( n < 0.95) {
+                        deg = 240;
+					}
+					else if ( n < 1) {
+                        deg = 300;
+					}
+
+                    return deg;
+                }
+
+
+                this.goKinerLottery(random());
+
+            },
+            KinerLotteryHandler: function(deg) {
+//                    alert("恭喜您获得:" + whichAward(deg));
+                    console.log("恭喜您获得:" + whichAward(deg))
+
+                } //抽奖结束回调
+        });
+
+
+
+    </script>
+</body>
+</html>
